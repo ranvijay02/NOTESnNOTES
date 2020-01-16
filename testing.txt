@@ -1,0 +1,23 @@
+SLA - SERVICE LEVEL AGREEMENTS 
+
+Absence of Software Testing 
+- Loss of Money, Time ,Reputation
+- Inability to meet contractual (SLAs) or legal requirements.  
+
+
+Three Environment:-  
+Development 
+Testing 
+Protection 
+
+Bugs found later costs more to fix. 
+
+Manual Testing and Automation Testing - two types 
+
+developers also do testing ie Unit Testing 
+Industry BAsede On function - 
+
+
+Product Based Company - Building thier own product and selling it in market. 
+
+Service Based Company - Building product , application or part of them , for other companies and their clients.  
