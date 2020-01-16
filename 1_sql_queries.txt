@@ -1,0 +1,275 @@
+MYSQL client commands:
+
+create database itc;
+
+create table EMPLOYEE(EMP_ID int(5) PRIMARY KEY AUTO_INCREMENT,
+EMP_NAME varchar(20) NOT NULL, EMP_DEPT varchar(20) NOT NULL, EMP_EMAILID varchar(50) NOT NULL);
+create table dept (DID varchar(10),NAME varchar(35),DADDRESS varchar(60));
+alter table dept add constraint did_pr_key primary key(did);
+insert into dept values ('D01','Finance','Chennai');
+insert into dept values ('D02','Mktg','Mumbai');
+insert into dept values ('D03','HR','Delhi');
+insert into dept values ('D04','IT','Bangalore');
+
+TO GET THE AUTO_INCREMENT value before insert:
+   select auto_increment from information_schema.tables where table_name='EMPLOYEE';
+OR after insert :
+  select last_insert_id()
+
+alter table EMPLOYEE add constraint eid_forn_key foreign key(EMP_DEPT) references dept(DID);
+
+SHOW CREATE TABLE employee;
+
+ALTER TABLE employee DROP FOREIGN KEY `eid_forn_key`;
+
+insert into employee (emp_name,emp_dept,emp_emailid)values('Geeta','D03','geeta@gmail.com');
+insert into employee (emp_name,emp_dept,emp_emailid)values('Harish','D01','harish@gmail.com');
+insert into employee (emp_name,emp_dept,emp_emailid)values('Mohan','D02','mohan@gmail.com');
+
+
+If we want to update if Pkey exists (rows affected - 0 if values same, 1 if new row, 2 if old record modified):
+
+insert into employee(emp_id, emp_name, emp_dept,emp_emailid) values
+(5, 'Mahesh','D03','mahsh@gmail.com')
+on duplicate key update
+emp_name=values(emp_name),
+emp_dept=values(emp_dept),
+emp_emailid=values(emp_emailid);
+
+select * from employee order by emp_name;
+select e.emp_id, e.emp_name, e.emp_dept, e.emp_emailid, d.name,d.daddress from employee e, dept d where e.emp_dept=d.did;
+select e.emp_id as EID, e.emp_name as ENAME, e.emp_dept as DEPT, e.emp_emailid as EMAIL,e.sal as SAL, d.name as DNAME,d.daddress as ADDRESS from employee e, dept d where e.emp_dept=d.did;
+
+
+delete from dept;
+delete from dept where did in ('D06','D07','D08');
+delete from dept where did = 'D06';
+
+-- rename --
+alter table dept rename department;
+alter table dept change location location int;
+
+create index emp_mob_idx on employee(mobile);
+
+
+------------------------------
+
+ORACLE SQLPLUS commands :
+create user kinguser identified by king123;
+grant all privileges to kinguser;
+connect kinguser/king123
+column ename format a12
+column eage format 999
+set serveroutput on
+set linesize 150
+set pagesize 20
+select username from dba_users;
+
+
+CREATE table prodorder (orderid number(10) primary key, product varchar2(40), price number(7,2), quantity number(5));
+INSERT into prodorder values(12011,'Mobile',8000,3);
+insert into prodorder(orderid, product,price,quantity) values(?,?,?,?);
+   change the price of an item in the table. Take orderid, price from user
+update prodorder set price =? where orderid=?
+set serveroutput on
+
+create or replace procedure myproc(orid IN number, prc OUT number)
+is
+begin
+  select price into prc from prodorder where orderid=orid;
+end;
+/
+
+declare
+x number:=12011;
+y number;
+begin
+ myproc(x,y);
+ DBMS_OUTPUT.PUT_LINE(x ||' price '|| y);
+end;
+/
+
+
+
+
+
+
+create table prodorder_bak as select * from prodorder
+
+DELETE from prodorder WHERE ORDERID=12001
+
+SELECT * from prodorder where product IN('Mobile','Lamp')
+
+select product, price from prodorder where product LIKE 'La%'
+
+alter table prodorder add constraint prod_chk 
+            CHECK(product in('Mobile','Laptop','Lamp'))
+
+create table custorder (custid number(10) primary key, name varchar2(45), mobile varchar2(12))
+
+insert into custorder values(1895, 'Geeta','901009764')
+
+ALTER TABLE prodorder ADD custid number(10)
+
+alter table prodorder add constraint fk_prod_cust FOREIGN key(custid) references custorder(custid)
+
+select * from prodorder order by price desc
+
+alter table prodorder add orderdate date
+
+alter table prodorder modify orderdate date default sysdate
+
+UPDATE prodorder set orderdate='01-12-2017' where  orderid=12022
+insert into prodorder (
+orderid,product,price,quantity,custid,orderdate)
+values(1102,'Laptop',40000,2,5566,'15-APR-17' )
+insert into prodorder (
+orderid,product,price,quantity,custid,orderdate)
+values(1101,Mobile,9000,3,5577,15-APR-17)
+insert into prodorder (
+orderid,product,price,quantity,custid,orderdate)
+values(1222,Printer,15000,4,6655,25-APR-17)
+insert into prodorder (
+orderid,product,price,quantity,custid,orderdate)
+values(1233,Printer,16000,3,5577,25-APR-17)
+
+select floor(sysdate-orderdate) as days from prodorder where orderid=12022
+
+desc custorder
+
+select product||' costs '||price AS details from prodorder 
+
+create SEQUENCE dept_seq
+
+select dept_seq.nextval from dual  /// this will fetch and also advance to next value
+
+select dept_seq.currval from dual  /// this will fetch current val without advancing
+
+create table dept (did number(5), dname varchar2(40),
+   location varchar2(35))
+
+insert into dept values(dept_seq.nextval,'HR','Mumbai')
+
+create table address(id number(10), city varchar2(40), state varchar2(40), street varchar2(40))
+
+insert into address values(35, 'Madurai','TamilNadu','muruganstreet')
+
+select state,count(*)as cities from address group by state 
+
+create VIEW prodview as select product, price from prodorder
+
+select mobile from custorder where custid=
+   (select custid from prodorder where orderid=12011)
+
+select c.name, c.mobile, p.product, p.orderdate from custorder c, prodorder p      where p.custid=c.custid and p.orderid=12011
+
+select city, case state when 'Karnataka' then 'here' else 'there' end as wher from address
+
+select distinct(state) from address
+
+select state,count(*)as cities from address group by state
+ having count(*)>1
+
+select product,sum(quantity) as cities from prodorder group by product order by product
+select to_char(sysdate, 'DD/month/YYYY') from dual
+
+select to_char(500.50,'$99,999')from dual
+
+update prodorder set custid='1895' where  orderid=12011
+
+select product, decode(quantity, 2, 'Two',3,'Three', quantity) from prodorder 
+
+select product, decode(quantity, 2, 'Two',5,'Five',null, 'Zero') as Quantity from prodorder 
+
+select p.product, p.price, c.mobile from prodorder p, custorder c 
+       where p.custid(+)=c.custid
+
+alter table prodorder RENAME COLUMN quantity TO quant
+
+create SEQUENCE dept_seq START WITH 1000
+
+select * from emp1,dept1 where emp1.dept(+)=dept1.id
+
+
+
+
+
+
+JOIN
+
+Cartesian join
+select * from prodorder, custorder
+cross join : select * from prodorder cross join custorder
+equi-join (inner) :
+select * from prodorder p, custorder c where p.custid=c.custid
+select p.product, c.name from prodorder p, custorder c where p.custid=c.custid
+natural join : select * from prodorder natural join custorder
+non-equijoin :
+select * from prodorder p, custorder c where p.price between 9000 and 20000
+outer join :
+select * from prodorder p, custorder c where p.custid=c.custid(+)
+USING clause when type mis match :
+    select * from prodorder join custorder USING (custid,custid)
+ON clause for explicit join :
+   select * from prodorder p JOIN custorder c ON (p.custid = c.custid)
+right outer join :
+      select * from prodorder p RIGHT outer join custorder c on 
+              (p.custid = c.custid)
+left outer join :
+      select * from prodorder p LEFT outer join custorder c on 
+              (p.custid = c.custid)
+full outer join :
+      select * from prodorder p FULL outer join custorder c on 
+              (p.custid = c.custid)
+
+Usage :
+create table stud_marks(roll_no number(6)primary key, sub1 number(3), sub2 number(3), sub3 number(3),  total number(3))
+
+insert into stud_marks values(1122,79,83,92,0)
+insert into stud_marks values(1155,69,78,86,0)
+
+update stud_marks s1 set total=(select sub1+sub2+sub3 from stud_marks s2 where s1.roll_no=s2.roll_no)
+
+create USER system1 IDENTIFIED BY sys123
+
+grant select on stud_marks to system1
+
+
+Constraint details are stored in:
+user_constraints 
+all_constraints 
+all_cons_columns 
+
+create or replace trigger trgemp
+after update of salary on emp9
+for each row
+begin
+  DBMS_OUTPUT.PUT_LINE(' Old Salary'||:old.salary||' Revised Salary '||:new.salary);
+end;
+/
+
+UPDATE emp9 set salary=salary+100 where id=1212
+
+CREATE table sal_record(id number(5) primary key, eid number(5), ename varchar2(30), old_sal number(10), new_sal number(10))
+CREATE sequence sal_sequence start with 1000
+CREATE or REPLACE trigger trgemp
+after update of salary on emp9
+for each row
+begin
+  DBMS_OUTPUT.PUT_LINE(:old.name||' Old Salary'||:old.salary||' Revised Salary '||:new.salary);
+insert into sal_record values(sal_sequence.NEXTVAL,
+ :old.id,:old.name,:old.salary,:new.salary);
+end;
+/
+
+create table emp_record (sno number(5), id number(5), name varchar2(30), old_mobile number(15),new_mobile number(15));
+CREATE or REPLACE trigger trgemp
+after update of mobile on employee
+for each row
+begin
+  DBMS_OUTPUT.PUT_LINE(:old.mobile||' Old mobile'||:old.mobile||' Revised mobile '||:new.mobile);
+insert into emp_record values(mob_seq.NEXTVAL,
+ :old.id,:old.name,:old.mobile,:new.mobile);
+end;
+/
+update employee set mobile = 9000112233 where id=5001

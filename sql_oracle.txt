@@ -1,0 +1,80 @@
+Start -> sqlplus 
+connect
+user: system
+password: ***
+
+CLEAR SCREEN :
+cl sc
+r
+
+CREATE USER:
+create user deloitte identified by del123;
+
+DROP USER:
+drop user deloitte cascade;
+
+GRANT PRIVILEGES:
+grant all privileges to deloitte;
+
+Create table:
+ID number,  NAME character, AGE number 3 digits, DESIG character
+
+101    Namitha   21   Developer
+111     Anshul     22    Team Lead
+
+create table employee(id number(5), name varchar(25), age number(3), desig varchar(10) );
+alter table employee add constraint emp_pk_id primary key(id);
+insert into employee values(101, 'Namitha', 21, 'Developer' );
+insert into employee values(111, 'Anshul', 22, 'Team Lead' );
+select * from employee;
+column name format a12
+column age format 999
+set linesize 150
+set pagesize 20
+create sequence emp_seq start with 1000;
+insert into employee values(emp_seq.NEXTVAL, 'Aishwarya', 21, 'Proj Lead' );
+select emp_seq.NEXTVAL from dual;
+select emp_seq.CURRVAL from dual;
+select name || ' is '||age||' years old and is a '||desig from employee;
+alter table employee add doj date default sysdate;
+insert into employee(id,name,age,desig) values(emp_seq.NEXTVAL, 'Abhijit', 22, 'Developer' );
+update employee set doj='15-DEC-2019' where id=101;
+select floor(sysdate-doj) as days from employee where id=101;
+create table dept(id number(5) primary key, name varchar(20), location number(5));
+insert into dept values(444, 'Accounts', 981);
+insert into dept values(455, 'Sales', 982);
+create table location(id number(5), name varchar(20), allowance number(7,2));
+insert into location values(981,'Mumbai',4000);
+insert into location values(982,'Delhi',4500);
+alter table location add primary key(id);
+alter table dept add constraint dept_fk_loc_id foreign key(location)
+references location(id);
+******* ADD COLUMN dept in EMPLOYEE TABLE and add foreign key constraint to dept(id)  ********
+alter table employee add dept number(5) references dept(id);
+
+show errors;
+---------------STORED PROCEDURE ---------
+create or replace procedure myproc(
+empid IN number,
+allw OUT number
+)
+as
+ dpt number;
+ ln number;
+begin
+   select e.dept into dpt from employee e where e.id=empid;
+   select d.location into ln from dept d where d.id=dpt;
+   select l.allowance into allw from location l where l.id=ln;
+end;
+/
+---------------TESTING PROCEDURE ---------
+set serveroutput on;
+
+declare
+  x number:=101;
+  y number;
+begin
+  myproc(x,y);
+  DBMS_OUTPUT.PUT_LINE(x ||' gets allowance ' ||y);
+end;
+/

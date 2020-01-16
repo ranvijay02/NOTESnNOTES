@@ -1,0 +1,33 @@
+KEYWORDS cannot be used as identifiers
+(name of class, enum,interface,method,variable)
+package
+public
+class
+static
+void
+private
+return
+this
+extends
+abstract
+interface
+import
+
+primitive types
+int, short, double, long, byte, char, boolean
+
+Ctrl + shift + F -> format
+Getter/setter methods:
+Alt + shift + S -> R 
+   space bar -> down arrow
+   .....
+   Enter
+Ctrl + shift + S -> save all
+syso ctrl + space bar
+   sysout
+Ctrl + F11 -> Run program
+Ctrl + shift + W -> close all
+
+
+
+

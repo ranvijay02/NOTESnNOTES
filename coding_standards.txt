@@ -1,0 +1,15 @@
+Coding standards
+
+1. Names of class, interface, enum should start with UPPERCASE, any new word within should start with UPPERCASE. (camel case)
+
+2. Names of variable, method should start with lower case, any new word within should start with UPPERCASE.
+
+3. Follow hungarian notation for naming
+  The name itself should explain what it is about
+
+4. Never write program in main method. Use objects instead.
+
+5. Keep all properties/fields/instance variables of class private.
+
+6. Keep each functionality in different classes
+

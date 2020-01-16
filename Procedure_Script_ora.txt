@@ -1,0 +1,175 @@
+To create :
+------------
+create or replace procedure bank_proc (
+acc_n IN number,
+amount IN number,
+msg OUT varchar )
+as
+bal  number(10);
+new_bal number(10);
+min_bal number(10) :=10000;
+begin  
+ select balance into bal from account where acc_no=acc_n;
+ new_bal := bal - amount;
+ if new_bal > min_bal
+ then
+    update account set balance = new_bal where acc_no=acc_n;
+    msg:='success';
+ else
+    msg:='fail';
+ end if;
+end;
+/
+set serveroutput on
+
+declare
+x number(10):=12345678;
+y number(10):=111;
+z number(10);
+BEGIN
+bank_proc1(x,y,z);
+DBMS_OUTPUT.PUT_LINE(x||', '||y||':'||z);
+END;
+/
+
+
+
+
+
+
+
+
+CREATE or REPLACE PROCEDURE myproc(
+
+id_dep IN NUMBER,
+
+name_dep OUT VARCHAR,
+
+addr_dep OUT VARCHAR)
+
+is
+BEGIN
+
+     SELECT d.DNAME,d.LOC into name_dep,addr_dep from dept d where d.DEPTNO=id_dep;
+
+END;
+/
+
+To execute :
+------------
+DECLARE
+x varchar2(25);
+y varchar2(25);
+BEGIN
+myproc(1001,x,y);
+DBMS_OUTPUT.PUT_LINE(x||', '||y);
+END;
+
+Trigger:
+
+create or replace trigger my_tgr 
+after update or delete or insert on emp
+for each row
+declare
+ emp_var1 varchar2(20):='insert';
+ emp_sal number;
+begin
+if updating then
+ emp_var1 := 'update';
+elsif deleting then 
+ emp_var1 := 'delete';
+end if;
+  emp_sal := :OLD.sal;
+ insert into emptr values(emp_var1,sysdate,emp_sal);
+end
+
+select * from emptr
+select * from emp
+update emp set sal=9000 where eid='E01'
+insert into emp values('E03','John',3000,'D03')
+delete from emp where eid='E04'
+
+Procedure :
+CREATE or REPLACE PROCEDURE myproc(
+id_emp IN VARCHAR,
+sal_var OUT NUMBER,
+d_name OUT varchar)
+AS
+e_temp varchar2(20);
+BEGIN
+select sal,dept_id into sal_var,e_temp from emp where eid=id_emp;
+select dname into d_name from dept where did=e_temp;
+END;
+
+declare
+  x number;
+  y varchar2(20):='E01';
+  z varchar2(20);
+begin
+  myproc(y,x,z);
+  DBMS_OUTPUT.PUT_LINE(y ||' gets ' ||x||' in '|| z);
+end;
+
+select * from emp
+select * from dept
+
+Function 1 :
+create or replace function show_emp (
+    e_id varchar)
+    return varchar
+as
+  e_temp varchar2(20);
+begin
+  select ename into e_temp from emp where eid=e_id;
+  return e_temp;
+end;
+
+declare
+ e_temp varchar2(20);
+begin
+ e_temp := show_emp('E01');
+DBMS_OUTPUT.PUT_LINE('emp name is '||e_temp);
+end;
+
+Function 2 :
+create or replace function show_emp (
+    e_id varchar)
+    return varchar
+as
+  n_temp varchar2(20);
+  d_temp varchar2(20);
+begin
+  select dept_id into d_temp from emp where eid=e_id;
+  select dname into n_temp from dept where did=d_temp;
+  return n_temp;
+end;
+
+declare
+ d_temp varchar2(20);
+begin
+ d_temp := show_emp('E01');
+DBMS_OUTPUT.PUT_LINE('dept name is '||d_temp);
+end;
+
+create or replace procedure myproc(
+empid IN number,
+allw OUT number
+)
+as
+ dpt number;
+ ln number;
+begin
+   select e.dept into dpt from employee e where e.id=empid;
+   select d.location into ln from dept d where d.id=dpt;
+   select l.allowance into allw from location l where l.id=ln;
+end;
+/
+
+declare
+  x number:=1000;
+  y number;
+begin
+  myproc(x,y);
+  DBMS_OUTPUT.PUT_LINE(x ||' gets allowance ' ||y);
+end;
+/

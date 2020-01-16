@@ -1,0 +1,9 @@
+"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+/*
+  ^            start of line
+  [_A-Za-z0-9-\\+]+       must start with char in the bracket AND must contain one or more of the chars
+  (\\.[_A-Za-z0-9-]+)*    follow by a period '.' AND char in the bracket one or more AND is optional
+  @[A-Za-z0-9-]+         must contain a '@' followed by char in the bracket one or more
+  (\\.[A-Za-z0-9]+)*       follow by a period '.' AND string in the bracket one or more AND is optional
+  (\\.[A-Za-z]{2,})           follow by a period '.' AND string in the bracket at least 2 characters
+ $            end of line

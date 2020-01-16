@@ -1,0 +1,165 @@
+To create :
+------------
+
+DELIMITER $$
+
+
+
+drop procedure myproc
+$$
+
+create procedure myproc(
+IN empid int,
+OUT allow int
+)
+begin
+ declare dpt int(5);
+ declare ln int(5);
+   select e.dept_id into dpt from employee e where e.id=empid;
+   select d.location_id into ln from dept d where d.id=dpt;
+   select l.allowance into allow from location l where l.id=ln;
+end;
+$$
+
+call myproc (1255,@allow);
+select @allow;
+$$
+
+-----------------------
+
+create procedure myproc(
+IN empid int,
+OUT allow int
+)
+begin
+ declare dpt varchar(10);
+ declare ln varchar(10);
+   select e.dept into dpt from emp e where e.eid=empid;
+   select d.location into ln from dept d where d.did=dpt;
+   select l.city_allowance into allow from location l where l.id=ln;
+end;
+$$
+
+call myproc (234,@nm);
+select @nm;
+$$
+
+
+CREATE PROCEDURE myproc(
+
+IN id_emp VARCHAR(15),
+
+OUT dep_emp VARCHAR(15)
+
+)
+
+
+BEGIN
+
+
+DECLARE e_dept varchar(15);
+      SELECT e.dept into e_dept from employee e where e.eid=id_emp;
+      SELECT d.dname into dep_emp from dept d where d.did=e_dept;
+
+END;
+
+$$
+
+
+call myproc ('E002',@nm);
+select @nm;
+$$
+
+
+DELIMITER $$
+
+
+
+drop procedure myproc
+$$
+
+CREATE PROCEDURE `myproc`(
+
+IN id_dep VARCHAR(25),
+
+OUT name_dep VARCHAR(45),
+
+OUT addr_dep VARCHAR(45)
+
+)
+
+
+BEGIN
+
+
+DECLARE e_dept varchar(30);
+
+     SELECT d.NAME, d.DADDRESS into name_dep,addr_dep from dept d where d.DID=id_dep;
+
+
+END;
+
+$$
+
+To execute :
+------------
+call myproc ('D02',@nm,@mm);
+select @nm,@mm;
+$$
+OR
+------------
+set @did = 'D03'; 
+call myproc (@did,@nm,@mm);
+select @did,@nm,@mm;
+$$
+OR
+------------
+set @did = 'D02'; 
+prepare s from 'call myproc (@did,@nm,@mm)'; 
+execute s;
+ 
+select @did, @nm, @mm;
+$$
+
+
+------------
+DELIMITER $$
+
+
+
+CREATE FUNCTION `myfun`
+  (  id_emp VARCHAR(25))
+
+ RETURNS VARCHAR(30)
+
+BEGIN
+
+
+DECLARE e_name varchar(30);
+
+     SELECT e.EMP_NAME into e_name  from employee e where e.EMP_ID=id_emp;
+
+     set e_name= CONCAT('Name:', e_name);
+     RETURN e_name;
+ 
+END;
+
+$$
+---------
+drop FUNCTION myfun;
+
+select myfun (1);
+
+---------
+
+mysql -u root p
+
+delimiter $$
+
+create trigger emptrigger after insert on emp for each row
+begin
+    insert into emptr values(sysdate());
+end
+$$
+
+
